@@ -6,7 +6,7 @@ const DB_URL: &str = "sqlite://db/pigeonv.db";
 
 #[derive(Clone)]
 pub struct Database {
-    pool: Pool<Sqlite>,
+    pub pool: Pool<Sqlite>,
 }
 
 impl Database {

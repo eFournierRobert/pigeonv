@@ -6,7 +6,7 @@ use axum::{
 };
 use serde::Deserialize;
 
-use crate::{AppState, templates};
+use crate::{AppState, services, templates};
 
 #[derive(Deserialize)]
 pub struct NewMessageForm {
@@ -24,9 +24,18 @@ pub async fn post_form(
     State(state): State<AppState>,
     Form(form): Form<NewMessageForm>,
 ) -> impl IntoResponse {
-    let t = templates::link::LinkTemplate {
-        link: form.valeur.clone(),
-    };
+    match services::insert_message(&state.db, form.valeur, form.expiration).await {
+        Ok(uuid) => {
+            let t = templates::link::LinkTemplate {
+                link: format!("localhost/{}", uuid.to_string()),
+            };
+            Html(t.render().unwrap())
+        }
+        Err(err) => {
+            // TODO error page
+            let t = templates::index::IndexTemplate {};
 
-    Html(t.render().unwrap())
+            Html(t.render().unwrap())
+        }
+    }
 }
