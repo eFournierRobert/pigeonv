@@ -2,6 +2,7 @@ use sqlx::{Pool, Sqlite, SqlitePool, migrate::MigrateDatabase};
 
 const DB_URL: &str = "sqlite://pigeonv.db";
 
+#[derive(Clone)]
 pub struct Database {
     pool: Pool<Sqlite>,
 }
