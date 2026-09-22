@@ -24,18 +24,15 @@ pub async fn post_form(
     State(state): State<AppState>,
     Form(form): Form<NewMessageForm>,
 ) -> impl IntoResponse {
-    match services::insert_message(&state.db, form.valeur, form.expiration).await {
-        Ok(uuid) => {
-            let t = templates::link::LinkTemplate {
-                link: format!("localhost/{}", uuid.to_string()),
-            };
-            Html(t.render().unwrap())
-        }
-        Err(err) => {
-            // TODO error page
-            let t = templates::index::IndexTemplate {};
-
-            Html(t.render().unwrap())
-        }
-    }
+    let rendered_response =
+        match services::insert_message(&state.db, form.valeur, form.expiration).await {
+            Ok(uuid) => {
+                let t = templates::link::LinkTemplate {
+                    link: format!("localhost/{}", uuid.to_string()),
+                };
+                Html(t.render().unwrap());
+            }
+            Err(err) => templates::error::load_error_template(err),
+        };
+    rendered_response
 }
