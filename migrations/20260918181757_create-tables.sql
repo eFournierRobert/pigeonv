@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    value TEXT NOT NULL,
+    expiration TEXT NOT NULL,
+    uuid TEXT NOT NULL UNIQUE
+);
