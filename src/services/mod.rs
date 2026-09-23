@@ -3,14 +3,10 @@ use std::str::FromStr;
 use chrono::Local;
 use uuid::Uuid;
 
-use crate::database::{Database, message};
-
-pub enum ServiceErrors {
-    ExpirationDateAfterCurrentDate,
-    WrongValues,
-    DatabaseErr,
-    InvalidUuid,
-}
+use crate::{
+    database::{Database, message},
+    templates::error::ServiceErrors,
+};
 
 pub async fn insert_message(
     state: &Database,
@@ -29,7 +25,10 @@ pub async fn insert_message(
     let uuid = Uuid::new_v4();
     message::insert_message(&state.pool, value, expiration, uuid)
         .await
-        .map_err(|_| ServiceErrors::DatabaseErr)
+        .map_err(|e| {
+            tracing::error!("Database insert failed: {e}");
+            ServiceErrors::DatabaseErr
+        })
 }
 
 pub async fn get_message(state: &Database, uuid_string: String) -> Result<String, ServiceErrors> {
@@ -40,7 +39,10 @@ pub async fn get_message(state: &Database, uuid_string: String) -> Result<String
 
     let message = match message::get_message(&state.pool, uuid).await {
         Ok(m) => m,
-        Err(_) => return Err(ServiceErrors::InvalidUuid),
+        Err(e) => {
+            tracing::error!("Database {uuid} select failed: {e}");
+            return Err(ServiceErrors::InvalidUuid);
+        }
     };
 
     let current_date = Local::now().naive_utc().date();

@@ -2,7 +2,7 @@ use askama::Template;
 use axum::{
     Form,
     extract::{Path, State},
-    response::Html,
+    response::{Html, IntoResponse},
 };
 use serde::Deserialize;
 
@@ -15,6 +15,7 @@ pub struct NewMessageForm {
 }
 
 pub async fn get_index() -> Html<String> {
+    tracing::info!("Received request: GET /");
     let t = templates::index::IndexTemplate {};
 
     Html(t.render().unwrap())
@@ -23,25 +24,33 @@ pub async fn get_index() -> Html<String> {
 pub async fn post_form(
     State(state): State<AppState>,
     Form(form): Form<NewMessageForm>,
-) -> Html<String> {
+) -> impl IntoResponse {
+    tracing::info!("Received request: POST /submit");
+
     match services::insert_message(&state.db, form.valeur, form.expiration).await {
         Ok(uuid) => {
+            tracing::info!("Returning UUID {}", uuid);
             let t = templates::link::LinkTemplate {
                 uuid: uuid.to_string(),
             };
-            Html(t.render().unwrap())
+            Html(t.render().unwrap()).into_response()
         }
-        Err(err) => templates::error::load_error_template(err),
+        Err(err) => err.into_response(),
     }
 }
 
-pub async fn get_message(State(state): State<AppState>, Path(uuid): Path<String>) -> Html<String> {
+pub async fn get_message(
+    State(state): State<AppState>,
+    Path(uuid): Path<String>,
+) -> impl IntoResponse {
+    tracing::info!("Received request: GET /m/{}", uuid);
+
     match services::get_message(&state.db, uuid).await {
         Ok(value) => {
             let t = templates::message::MessageTemplate { message: value };
 
-            Html(t.render().unwrap())
+            Html(t.render().unwrap()).into_response()
         }
-        Err(err) => templates::error::load_error_template(err),
+        Err(err) => err.into_response(),
     }
 }
