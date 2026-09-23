@@ -32,3 +32,20 @@ pub async fn insert_message(
 
     Ok(inserted_uuid)
 }
+
+pub async fn get_message(pool: &Pool<Sqlite>, uuid: Uuid) -> anyhow::Result<Message> {
+    let m: (String, String) = sqlx::query_as(
+        r#"
+        SELECT value, expiration FROM messages WHERE uuid = ?1"#,
+    )
+    .bind(uuid.to_string())
+    .fetch_one(pool)
+    .await?;
+
+    Ok(Message {
+        id: -1,
+        uuid,
+        value: m.0,
+        expiration: chrono::NaiveDate::parse_from_str(&m.1, "%Y-%m-%d")?,
+    })
+}

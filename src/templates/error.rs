@@ -16,6 +16,7 @@ pub fn load_error_template(err: ServiceErrors) -> Html<String> {
             String::from("Date d'expiration avant la date d'aujourd'hui")
         }
         ServiceErrors::WrongValues => String::from("Message ou date d'expiration invalide"),
+        ServiceErrors::InvalidUuid => String::from("Lien invalide"),
     };
 
     let t = ErrorTemplate { error: err_message };

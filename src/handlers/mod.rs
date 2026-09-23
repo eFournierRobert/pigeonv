@@ -1,6 +1,11 @@
 use askama::Template;
-use axum::{Form, extract::State, response::Html};
+use axum::{
+    Form,
+    extract::{Path, State},
+    response::Html,
+};
 use serde::Deserialize;
+use uuid::Uuid;
 
 use crate::{AppState, services, templates};
 
@@ -25,6 +30,17 @@ pub async fn post_form(
             let t = templates::link::LinkTemplate {
                 uuid: uuid.to_string(),
             };
+            Html(t.render().unwrap())
+        }
+        Err(err) => templates::error::load_error_template(err),
+    }
+}
+
+pub async fn get_message(State(state): State<AppState>, Path(uuid): Path<String>) -> Html<String> {
+    match services::get_message(&state.db, uuid).await {
+        Ok(value) => {
+            let t = templates::message::MessageTemplate { message: value };
+
             Html(t.render().unwrap())
         }
         Err(err) => templates::error::load_error_template(err),

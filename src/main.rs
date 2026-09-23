@@ -27,6 +27,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(handlers::get_index))
         .route("/submit", post(handlers::post_form))
+        .route("/m/{uuid}", get(handlers::get_message))
         .nest_service("/static", ServeDir::new("static"))
         .with_state(state);
 
