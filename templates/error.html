@@ -11,15 +11,7 @@
             <div class="title-bar">
                 <h1>Pigeon Voyageur</h1>
             </div>
-            <div class="link">
-                <div class="link-container" onclick="copyToClipboard()">
-                    <p>Lien vers le message: <a href="/m/{{ uuid }}" id="message-link"></a></p>
-                </div>
-            </div>
+            <p>Erreur: {{ error }}</p>
         </div>
-        <script>
-          const link = document.getElementById("message-link");
-          link.textContent = link.href;
-        </script>
     </body>
 </html>
