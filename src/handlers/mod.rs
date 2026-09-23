@@ -5,7 +5,6 @@ use axum::{
     response::Html,
 };
 use serde::Deserialize;
-use uuid::Uuid;
 
 use crate::{AppState, services, templates};
 
