@@ -10,6 +10,8 @@ pub struct ErrorTemplate {
 }
 
 pub fn load_error_template(err: ServiceErrors) -> Html<String> {
+    tracing::warn!("Error while threating request: {:#?}", err);
+
     let err_message = match err {
         ServiceErrors::DatabaseErr => String::from("Erreur serveur"),
         ServiceErrors::ExpirationDateAfterCurrentDate => {

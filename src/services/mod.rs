@@ -5,6 +5,7 @@ use uuid::Uuid;
 
 use crate::database::{Database, message};
 
+#[derive(Debug)]
 pub enum ServiceErrors {
     ExpirationDateAfterCurrentDate,
     WrongValues,

@@ -3,6 +3,7 @@ use axum::{
     routing::{get, post},
 };
 use tower_http::services::ServeDir;
+use tracing::info;
 
 use crate::database::Database;
 
@@ -18,6 +19,8 @@ struct AppState {
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt::init();
+
     let database = match Database::new().await {
         Ok(d) => d,
         Err(e) => panic!("error while initializing database connection: {}", e),
@@ -31,6 +34,10 @@ async fn main() {
         .nest_service("/static", ServeDir::new("static"))
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
+    info!("Router started and listening on localhost:8080");
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
+        .await
+        .unwrap();
     axum::serve(listener, app).await.unwrap();
 }
