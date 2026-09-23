@@ -15,13 +15,25 @@ Built with Rust (Axum + askama + SQLite).
 Then open http://127.0.0.1:8080/ . Migrations in `migrations/` apply
 themselves on startup — there's no separate migrate step.
 
+## Quickstart (Docker)
+
+```bash
+    git clone https://codeberg.org/efournierrobert/pigeonv.git
+    cd pigeonv
+    docker compose -f docker/docker-compose.yml up --build
+```
+
+Then open http://127.0.0.1:8080/ . No `db/` prep needed — the compose file
+mounts `./db` for the database, so pastes persist across rebuilds.
+
 ## Caveats
 
 - Run it from the repo root — the database path and the `/static` mount
   are resolved relative to the working directory.
-- Binds to 127.0.0.1:8080 only (localhost). Not network-accessible, and
-  there's no `PORT` env var.
+- Listens on port 8080 (hardcoded, no `PORT` env var) bound to all
+  interfaces, so a local run is reachable on your network.
 - Data lives in `db/pigeonv.db` (gitignored) — each machine keeps its own.
+  With Docker, the compose file persists it in `docker/db/` instead.
 - The interface and error messages are in French.
 - A paste needs a date after today (UTC); when it expires the link 404s,
   though the row is never deleted from the database.
