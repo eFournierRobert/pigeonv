@@ -1,15 +1,22 @@
+//! Shared error handling: maps service failures to HTTP responses.
+
 use askama::Template;
 use axum::{
     http::StatusCode,
     response::{Html, IntoResponse},
 };
 
+/// Error page rendered for every service failure.
 #[derive(Template)]
 #[template(path = "error.html")]
 pub struct ErrorTemplate {
     pub error: String,
 }
 
+/// All service-level failure modes.
+///
+/// Each variant maps (see the `IntoResponse` impl) to an HTTP status and a
+/// French user-facing message rendered by `error.html`.
 #[derive(Debug)]
 pub enum ServiceErrors {
     ExpirationDateAfterCurrentDate,
@@ -19,6 +26,7 @@ pub enum ServiceErrors {
 }
 
 impl IntoResponse for ServiceErrors {
+    /// Renders this error as `error.html` with the matching status code.
     fn into_response(self) -> axum::response::Response {
         let (status, message) = match self {
             ServiceErrors::DatabaseErr => (
@@ -35,8 +43,6 @@ impl IntoResponse for ServiceErrors {
                 "Message ou date d'expiration invalide",
             ),
         };
-
-        tracing::error!("Returning error; status: {status} ; error: {message}");
 
         let t = ErrorTemplate {
             error: String::from(message),

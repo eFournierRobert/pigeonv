@@ -1,6 +1,13 @@
+//! Raw SQL queries for the `messages` table.
+//!
+//! All queries use bound parameters (no string interpolation). `expiration` is
+//! stored as `TEXT` in `%Y-%m-%d` format.
+
 use sqlx::{Pool, Row, Sqlite};
 use uuid::Uuid;
 
+/// A single paste: its value, uuid, and expiration date.
+/// The paste is accessible until (but not including) the expiration date.
 pub struct Message {
     pub id: i32,
     pub uuid: Uuid,
@@ -8,6 +15,7 @@ pub struct Message {
     pub expiration: chrono::NaiveDate,
 }
 
+/// Inserts the paste and returns the uuid of the inserted row.
 pub async fn insert_message(
     pool: &Pool<Sqlite>,
     value: String,
@@ -33,6 +41,7 @@ pub async fn insert_message(
     Ok(inserted_uuid)
 }
 
+/// Looks up a paste by uuid.
 pub async fn get_message(pool: &Pool<Sqlite>, uuid: Uuid) -> anyhow::Result<Message> {
     let m: (String, String) = sqlx::query_as(
         r#"

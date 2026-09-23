@@ -1,3 +1,18 @@
+//! Pigeonv — a self-expiring paste service.
+//!
+//! Stack: Axum 0.8, askama templates, SQLite via sqlx (bundled, no system SQLite
+//! needed). Single binary. The database (`db/pigeonv.db`) and the `/static`
+//! mount are resolved relative to the process working directory, so run from
+//! the repository root.
+//!
+//! Listens on 127.0.0.1:8080 (hardcoded, no `PORT` env var).
+//!
+//! Routes:
+//! - `GET /` — paste creation form
+//! - `POST /submit` — creates a paste, shows the share link page
+//! - `GET /m/{uuid}` — shows a paste (404 if unknown or expired)
+//! - `/static/...` — static assets
+
 use axum::{
     Router,
     routing::{get, post},
@@ -7,16 +22,22 @@ use tracing::info;
 
 use crate::database::Database;
 
+/// SQLite access: pool and raw queries.
 mod database;
+/// Axum route handlers.
 mod handlers;
+/// Validation and business logic.
 mod services;
+/// Askama templates and error rendering.
 mod templates;
 
+/// Shared state passed to all handlers.
 #[derive(Clone)]
 struct AppState {
     db: Database,
 }
 
+/// Initializes the database (panics on failure), then serves on 127.0.0.1:8080.
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
