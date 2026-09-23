@@ -36,6 +36,8 @@ impl IntoResponse for ServiceErrors {
             ),
         };
 
+        tracing::error!("Returning error; status: {status} ; error: {message}");
+
         let t = ErrorTemplate {
             error: String::from(message),
         };
