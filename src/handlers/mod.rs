@@ -23,7 +23,7 @@ pub async fn post_form(
     match services::insert_message(&state.db, form.valeur, form.expiration).await {
         Ok(uuid) => {
             let t = templates::link::LinkTemplate {
-                link: format!("localhost/{}", uuid.to_string()),
+                uuid: uuid.to_string(),
             };
             Html(t.render().unwrap())
         }
