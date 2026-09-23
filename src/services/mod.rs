@@ -3,15 +3,10 @@ use std::str::FromStr;
 use chrono::Local;
 use uuid::Uuid;
 
-use crate::database::{Database, message};
-
-#[derive(Debug)]
-pub enum ServiceErrors {
-    ExpirationDateAfterCurrentDate,
-    WrongValues,
-    DatabaseErr,
-    InvalidUuid,
-}
+use crate::{
+    database::{Database, message},
+    templates::error::ServiceErrors,
+};
 
 pub async fn insert_message(
     state: &Database,
