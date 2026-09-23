@@ -8,9 +8,7 @@
     </head>
     <body>
         <div class="container">
-            <div class="title-bar">
-                <h1>Pigeon Voyageur</h1>
-            </div>
+            {% include "title-bar.html" %}
             <div class="link">
                 <div class="link-container" onclick="copyToClipboard()">
                     <p>Lien vers le message: <a href="/m/{{ uuid }}" id="message-link"></a></p>
