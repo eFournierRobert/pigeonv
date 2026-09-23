@@ -4,7 +4,8 @@ Pigeonv is a single-binary Rust web app (a self-expiring paste service): axum 0.
 
 ## Commands
 
-- `cargo run` — build and start the server. It listens on **127.0.0.1:8080 hardcoded** (no `PORT` env); the process panics if the port is taken.
+- `cargo run` — build and start the server. It listens on **0.0.0.0:8080 hardcoded** (no `PORT` env, all interfaces — locally it is network-reachable); the process panics if the port is taken.
+- Docker: `docker compose -f docker/docker-compose.yml up --build`. Compose mounts `./db` (relative to the compose file, i.e. `docker/db/`) so data persists; the final image contains the binary plus `static/`.
 - `cargo check` / `cargo clippy` / `cargo build --release` — the only verification available. There is no test suite (`cargo test` runs nothing).
 - Migrations need no CLI step: `sqlx::migrate!().run(...)` applies `migrations/*.sql` automatically at startup. To change the schema, add a **new** timestamped `.sql` file to `migrations/` (never edit existing ones).
 

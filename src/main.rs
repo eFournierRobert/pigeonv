@@ -5,7 +5,8 @@
 //! mount are resolved relative to the process working directory, so run from
 //! the repository root.
 //!
-//! Listens on 127.0.0.1:8080 (hardcoded, no `PORT` env var).
+//! Listens on 0.0.0.0:8080 (hardcoded, no `PORT` env var) — reachable on the
+//! network, not just localhost.
 //!
 //! Routes:
 //! - `GET /` — paste creation form
@@ -37,7 +38,7 @@ struct AppState {
     db: Database,
 }
 
-/// Initializes the database (panics on failure), then serves on 127.0.0.1:8080.
+/// Initializes the database (panics on failure), then serves on 0.0.0.0:8080.
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();

@@ -10,6 +10,7 @@ FROM debian:trixie-slim
 WORKDIR /app
 
 COPY --from=builder /app/target/release/pigeonv .
+COPY --from=builder /app/static/ static/
 
 RUN mkdir /app/db
 
