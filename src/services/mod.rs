@@ -5,6 +5,7 @@ use crate::database::{Database, message};
 
 pub enum ServiceErrors {
     ExpirationDateAfterCurrentDate,
+    WrongValues,
     DatabaseErr,
 }
 
@@ -16,6 +17,10 @@ pub async fn insert_message(
     let current_date = Local::now().naive_utc().date();
     if current_date >= expiration {
         return Err(ServiceErrors::ExpirationDateAfterCurrentDate);
+    }
+
+    if value.is_empty() {
+        return Err(ServiceErrors::WrongValues);
     }
 
     let uuid = Uuid::new_v4();
