@@ -1,3 +1,8 @@
+//! Business logic and validation.
+//!
+//! Handlers delegate here. Failures are mapped to `ServiceErrors`
+//! (defined in the `templates` module).
+
 use std::str::FromStr;
 
 use chrono::Local;
@@ -8,6 +13,10 @@ use crate::{
     templates::error::ServiceErrors,
 };
 
+/// Validates and stores a new paste, returning its uuid.
+///
+/// The expiration date must be in the future (strictly after today, UTC) and
+/// the value must be non-empty.
 pub async fn insert_message(
     state: &Database,
     value: String,
@@ -31,6 +40,7 @@ pub async fn insert_message(
         })
 }
 
+/// Looks up a paste by uuid. Unknown or expired pastes yield a 404.
 pub async fn get_message(state: &Database, uuid_string: String) -> Result<String, ServiceErrors> {
     let uuid = match uuid::Uuid::from_str(&uuid_string) {
         Ok(u) => u,
