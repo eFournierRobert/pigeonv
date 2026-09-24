@@ -1,0 +1,151 @@
+/* Pigeon Voyageur — "Hermes" palette: warm gold on a midnight-navy canvas.
+   Desktop-first; the phone override at the bottom only changes sizing. */
+
+:root {
+    /* color-scheme: dark makes native widgets (date picker, scrollbars)
+       render dark to match instead of showing up as light-mode boxes. */
+    color-scheme: dark;
+    --bg: #0a1628;           /* deep navy canvas */
+    --control-bg: #12203a;   /* lighter navy for inputs */
+    --text: #f2ecd8;         /* warm cream text */
+    --muted: #8fa3bf;        /* blue-gray: labels, borders, rules */
+    --accent: #e8b64c;       /* warm gold */
+    --accent-deep: #c9992e;  /* button hover */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+}
+
+/* Just a centered, readable column. No box — the padding is what gives
+   the layout room to breathe. */
+.container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 3rem;
+}
+
+/* --- title bar --- */
+
+.title-bar {
+    border-bottom: 1px solid rgba(143, 163, 191, 0.35);
+    margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
+}
+
+.title-bar h1 {
+    margin: 0;
+    font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
+    font-size: 1.75rem;
+    letter-spacing: 0.04em;
+}
+
+.title-bar a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.title-bar a:hover {
+    text-decoration: underline;
+}
+
+/* --- form (index) --- */
+
+.form label {
+    display: block;
+    margin: 0.9rem 0 0.35rem;
+    color: var(--muted);
+}
+
+.form label[for="expiration"] {
+    margin-top: 1.25rem;
+}
+
+textarea#valeur {
+    width: 100%;
+    min-height: 12rem;
+    padding: 0.6rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--control-bg);
+    border: 1px solid var(--muted);
+    border-radius: 4px;
+    resize: vertical;
+}
+
+input#expiration {
+    padding: 0.4rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--control-bg);
+    border: 1px solid var(--muted);
+    border-radius: 4px;
+}
+
+::placeholder {
+    color: var(--muted);
+}
+
+input[type="submit"] {
+    margin-top: 1.5rem;
+    padding: 0.7rem 1.6rem;
+    font: inherit;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background: var(--accent-deep);
+}
+
+/* --- copyable boxes (message / link pages) --- */
+
+/* Both boxes copy to clipboard on click (see message.js / link.html). */
+.message-container,
+.link-container {
+    padding: 1rem;
+    border: 2px dashed var(--accent);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.message-container:hover,
+.link-container:hover {
+    background: rgba(232, 182, 76, 0.08);
+}
+
+.message-container p {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.link-container a {
+    color: var(--accent);
+}
+
+/* --- phone override --- */
+
+@media (max-width: 600px) {
+    .container {
+        max-width: none;
+        padding: 1.5rem 1rem 2.5rem;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        padding: 0.9rem 1.4rem; /* bigger target for thumbs */
+    }
+}
