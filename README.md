@@ -6,7 +6,7 @@ Built with Rust (Axum + askama + SQLite).
 
 ## Quickstart
 ```bash
-    git clone https://codeberg.org/efournierrobert/pigeonv.git
+    git clone https://github.com/eFournierRobert/pigeonv.git
     cd pigeonv
     mkdir -p db        # only on a fresh clone — db/ is gitignored
     cargo run           # run from the repo root
@@ -18,7 +18,7 @@ themselves on startup — there's no separate migrate step.
 ## Quickstart (Docker)
 
 ```bash
-    git clone https://codeberg.org/efournierrobert/pigeonv.git
+    git clone https://github.com/eFournierRobert/pigeonv.git
     cd pigeonv
     docker compose -f docker/docker-compose.yml up --build
 ```
